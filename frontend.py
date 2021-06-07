@@ -24,11 +24,15 @@ class GUI:
         y, x = self.stdscr.getyx()
         return Position(x, y)
 
+    def _get_max_pos(self):
+        y, x = self.stdscr.getmaxyx()
+        return Position(x, y)
+
     def _goto_pos(self, pos):
         self.stdscr.move(pos.y, pos.x)
 
     def _write(self, string):
-        self.stdscr.addstr(' ')
+        self.stdscr.addstr(string)
 
     def _remove_last_char(self, search_phrase):
         if search_phrase:
@@ -43,7 +47,7 @@ class GUI:
         return search_phrase
 
     def run(self):
-        self.stdscr.addstr("$ ")
+        self._write("$ ")
         search_phrase = ""
         while True:
             key = self.stdscr.getkey()
@@ -55,34 +59,35 @@ class GUI:
                 pass
             else:
                 search_phrase += key
-                self.stdscr.addstr(key)
+                self._write(key)
 
-            y_search_bar_cursor, x_search_bar_cursor = self.stdscr.getyx()
+            pos_search_bar_cursor = self._get_cursor_pos()
 
-            hits = self.searcher.search_for_phrases(search_phrase.split(' '))
-            y_max, x_max = self.stdscr.getmaxyx()
+            search_phrase_list = search_phrase.split(' ')
+            hits = self.searcher.search_for_phrases(search_phrase_list)
+            pos_max = self._get_max_pos()
 
-            nbr_search_results = max(y_max - 5, 5)
-            y_search_results = y_search_bar_cursor + 1
+            nbr_search_results = max(pos_max.y - 5, 5)
+            pos_search_results = Position(0, pos_search_bar_cursor.y + 1)
 
             # Clear old results
             self.stdscr.clrtobot()
 
             # Print top results
-            self.stdscr.move(y_search_results, 0)
+            self._goto_pos(pos_search_results)
             if hits:
                 for i in range(min(nbr_search_results, len(hits) - 1)):
                     try:
                         command_str = hits[i]
-                        if len(command_str) >= x_max-1:
+                        if len(command_str) >= pos_max.x-1:
                             # Don't print entire command if it's too long
-                            command_str = command_str[:x_max-1]
-                        self.stdscr.addstr(command_str + '\n')
+                            command_str = command_str[:pos_max.x-1]
+                        self._write(command_str + '\n')
                     except:
                         break
 
             # Move cursor back
-            self.stdscr.move(y_search_bar_cursor, x_search_bar_cursor)
+            self._goto_pos(pos_search_bar_cursor)
 
         return search_phrase
 
