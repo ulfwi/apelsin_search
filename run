@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# python history.py $@
+# python history.py qac validator
+
+python test_curses.py
