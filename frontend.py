@@ -1,15 +1,9 @@
 import curses
 from history import Searcher
+from utils import Position
 
 
 # https://docs.python.org/3/howto/curses.html
-
-class Position:
-    def __init__(self, x, y):
-        """ Create a new point at the origin """
-        self.x = x
-        self.y = y
-
 
 class GUI:
     def __init__(self):
