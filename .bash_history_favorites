@@ -1,0 +1,10 @@
+./bazel.py build -c opt stringent/libraries/targettracking_validator --remote_cache=""
+./bazel.py build -c opt stringent/modules/targettracking --remote_cache=""
+./bazel.py build -c opt stringent/targets/pi/targettracking:fry --remote_cache=""
+./bazel.py test -c opt stringent/libraries/targettracking_validator/test --remote_cache=""
+./bazel.py test -c opt stringent/modules/targettracking/test --remote_cache=""
+./run.py qac --configure --clean --target stringent/modules/targettracking --gui
+./run.py qac --configure --clean --target stringent/libraries/targettracking_validator --gui
+git push origin HEAD:refs/for/master%wip
+./bazel.py test stringent/targets/pi/wcs/trackvalidator/test:test_trackvalidator --remote_cache="" --config=callgrind --sandbox_debug --cache_test_results=no --compilation_mode=opt --copt=-g3
+./bazel.py test stringent/targets/pi/wcs/targettracking/test:test_targettracking --remote_cache="" --config=callgrind --sandbox_debug --cache_test_results=no --compilation_mode=opt --copt=-g3
