@@ -22,6 +22,11 @@ class HistorySearch:
                 break
             elif key in ['KEY_RIGHT', 'KEY_LEFT', 'KEY_UP', 'KEY_DOWN']:
                 pass
+            elif key == 'KEY_RESIZE':
+                pass
+            elif key in ['KEY_PPAGE', 'KEY_NPAGE', 'KEY_DC', 'KEY_END', 'KEY_HOME', 'KEY_IC']:
+                # Ignore keys
+                pass
             else:
                 search_phrase += key
                 self.gui.write(key)
