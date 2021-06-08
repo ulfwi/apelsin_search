@@ -82,7 +82,7 @@ class HistorySearch:
             hits = self.searcher.search_for_phrases(search_phrase_list)
             pos_max = self.gui.get_max_pos()
 
-            nbr_search_results = max(pos_max.y - 5, 5)
+            max_nbr_search_results = max(pos_max.y - 5, 5)
             pos_search_results = Position(0, pos_search_bar_cursor.y + 1)
 
             # Clear old results
@@ -91,7 +91,8 @@ class HistorySearch:
             # Print top results
             self.gui.goto_pos(pos_search_results)
             if hits:
-                for i in range(min(nbr_search_results, len(hits) - 1)):
+                nbr_search_results = min(max_nbr_search_results, len(hits))
+                for i in range(nbr_search_results):
                     try:
                         command_str = hits[i]
                         if len(command_str) >= pos_max.x-1:
