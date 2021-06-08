@@ -1,5 +1,5 @@
 import curses
-from history import Searcher
+from file_searcher import FileSearcher
 from utils import Position
 
 
@@ -50,7 +50,7 @@ class GUI:
 class HistorySearch:
     def __init__(self, filepath):
         self.filepath = filepath
-        self.searcher = Searcher(self.filepath)
+        self.searcher = FileSearcher(self.filepath)
         self.gui = GUI()
 
     def run(self):

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# python history.py $@
-# python history.py qac validator
+# python file_searcher.py $@
+# python file_searcher.py qac validator
 
 python frontend.py

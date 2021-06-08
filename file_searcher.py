@@ -1,7 +1,7 @@
 import argparse
 
 
-class Searcher:
+class FileSearcher:
     def __init__(self, filepath):
         self.filepath = filepath
         self.history_list = self.get_history_list(self.filepath)
@@ -37,7 +37,6 @@ class Searcher:
 if __name__ == '__main__':
     # TODO:
     #  * Colour output
-    #  * Use ncurses
     #  * Write output to command line (probably bash)
     #       * https://stackoverflow.com/questions/62667273/can-bash-write-a-command-to-the-terminal-input
     #  * Add bash_history_favourites file
@@ -56,7 +55,7 @@ if __name__ == '__main__':
 
     print('Searching for phrases: ' + str(phrases))
 
-    searcher = Searcher(filepath)
+    searcher = FileSearcher(filepath)
     hits = searcher.search_for_phrases(phrases)
 
     print('\nHits: ')
