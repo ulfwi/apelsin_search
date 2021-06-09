@@ -36,9 +36,6 @@ class FileSearcher:
 
 if __name__ == '__main__':
     # TODO:
-    #  * Colour output
-    #  * Write output to command line (probably bash)
-    #       * https://stackoverflow.com/questions/62667273/can-bash-write-a-command-to-the-terminal-input
     #  * Add bash_history_favourites file
     #       * Add functionality to add commands to favourites
 

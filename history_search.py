@@ -105,5 +105,7 @@ if __name__ == '__main__':
 
     del history_search
 
-    print(output)
+    # Write result to file
+    with open("search_result", "w") as f:
+        f.write(output)
 

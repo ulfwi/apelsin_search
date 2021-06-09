@@ -4,3 +4,10 @@
 # python file_searcher.py qac validator
 
 python history_search.py
+
+# Result from history search is written to file search_result
+command=$(cat search_result)
+rm search_result
+
+echo $command
+$command
