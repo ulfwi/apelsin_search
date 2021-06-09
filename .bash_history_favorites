@@ -8,3 +8,5 @@
 git push origin HEAD:refs/for/master%wip
 ./bazel.py test stringent/targets/pi/wcs/trackvalidator/test:test_trackvalidator --remote_cache="" --config=callgrind --sandbox_debug --cache_test_results=no --compilation_mode=opt --copt=-g3
 ./bazel.py test stringent/targets/pi/wcs/targettracking/test:test_targettracking --remote_cache="" --config=callgrind --sandbox_debug --cache_test_results=no --compilation_mode=opt --copt=-g3
+./bazel.py run //stringent/libraries/targettracking_validator:qac_messages --remote_cache="" -- --update
+./bazel.py run //stringent/libraries/targettracking_validator:qac_severity --remote_cache=""
