@@ -54,11 +54,14 @@ class HistorySearch:
         # Move cursor back
         self.gui.goto_pos(pos_search_bar_cursor)
 
+        return hits
+
     def run(self):
         self.mode = Mode.typing
         self.gui.write("$ ")
         search_phrase = ""
         result_selection_idx = 0
+        hits = []
         while True:
             key = self.gui.get_key()
             if key == 'KEY_BACKSPACE':
@@ -76,9 +79,10 @@ class HistorySearch:
                     result_selection_idx = 0
                     self.mode = Mode.selecting_results
                 elif key == 'KEY_DOWN':
-                    result_selection_idx += 1
+                    # TODO: handle when hits is longer than max_nbr_search_results
+                    result_selection_idx = (result_selection_idx + 1) % len(hits)
                 else:
-                    result_selection_idx -= 1
+                    result_selection_idx = (result_selection_idx - 1) % len(hits)
             elif key == 'KEY_RESIZE':
                 pass
             elif key in ['KEY_PPAGE', 'KEY_NPAGE', 'KEY_DC', 'KEY_END', 'KEY_HOME', 'KEY_IC']:
@@ -89,9 +93,9 @@ class HistorySearch:
                 search_phrase += key
                 self.gui.write(key)
 
-            self.update_results(search_phrase, result_selection_idx)
+            hits = self.update_results(search_phrase, result_selection_idx)
 
-        return search_phrase
+        return hits[result_selection_idx]
 
 
 if __name__ == '__main__':
