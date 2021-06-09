@@ -35,10 +35,6 @@ class FileSearcher:
 
 
 if __name__ == '__main__':
-    # TODO:
-    #  * Add bash_history_favourites file
-    #       * Add functionality to add commands to favourites
-
     description = r"""Search in command history.
     Bjorn Ulfwi, 2021.
     """

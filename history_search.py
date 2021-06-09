@@ -79,7 +79,6 @@ class HistorySearch:
                     result_selection_idx = 0
                     self.mode = Mode.selecting_results
                 elif key == 'KEY_DOWN':
-                    # TODO: handle when hits is longer than max_nbr_search_results
                     result_selection_idx = (result_selection_idx + 1) % len(hits)
                 else:
                     result_selection_idx = (result_selection_idx - 1) % len(hits)
