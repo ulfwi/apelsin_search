@@ -100,12 +100,13 @@ class HistorySearch:
 
 if __name__ == '__main__':
     filepath = '/home/s0001191/.bash_history'
+    apelsin_dir = '/home/s0001191/repos/history'
     history_search = HistorySearch(filepath)
     output = history_search.run()
 
     del history_search
 
     # Write result to file
-    with open("search_result", "w") as f:
+    with open(apelsin_dir + "/search_result", "w") as f:
         f.write(output)
 

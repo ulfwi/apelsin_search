@@ -1,0 +1,16 @@
+#!/bin/bash
+
+APELSIN_DIR="/home/s0001191/repos/history"
+
+# TODO: Make it possible to execute aliases
+apelsin()
+{
+    python $APELSIN_DIR/history_search.py
+
+    # Result from history search is written to file search_result
+    command=$(cat $APELSIN_DIR/search_result)
+    rm $APELSIN_DIR/search_result
+
+    echo $command
+    $command
+}
