@@ -16,21 +16,17 @@ class HistorySearch:
         self.gui = GUI()
         self.mode = Mode.none
 
-    def update_results(self, search_phrase):
-        pos_search_bar_cursor = self.gui.get_cursor_pos()
+        self.pos_search_results = Position(0, 1)
 
-        search_phrase_list = search_phrase.split(' ')
-        hits = self.searcher.search_for_phrases(search_phrase_list)
+    def display_results(self, hits, result_selection_idx):
         pos_max = self.gui.get_max_pos()
-
         max_nbr_search_results = max(pos_max.y - 5, 5)
-        pos_search_results = Position(0, pos_search_bar_cursor.y + 1)
 
         # Clear old results
         self.gui.clear_remainder_of_screen()
 
         # Print top results
-        self.gui.goto_pos(pos_search_results)
+        self.gui.goto_pos(self.pos_search_results)
         if hits:
             nbr_search_results = min(max_nbr_search_results, len(hits))
             for i in range(nbr_search_results):
@@ -39,9 +35,21 @@ class HistorySearch:
                     if len(command_str) >= pos_max.x-1:
                         # Don't print entire command if it's too long
                         command_str = command_str[:pos_max.x-1]
-                    self.gui.write(command_str + '\n')
+
+                    if self.mode == Mode.selecting_results and i == result_selection_idx:
+                        self.gui.write(command_str + '\n', 2)
+                    else:
+                        self.gui.write(command_str + '\n', 1)
                 except:
                     break
+
+    def update_results(self, search_phrase, result_selection_idx):
+        pos_search_bar_cursor = self.gui.get_cursor_pos()
+
+        search_phrase_list = search_phrase.split(' ')
+        hits = self.searcher.search_for_phrases(search_phrase_list)
+
+        self.display_results(hits, result_selection_idx)
 
         # Move cursor back
         self.gui.goto_pos(pos_search_bar_cursor)
@@ -58,7 +66,7 @@ class HistorySearch:
                 if search_phrase:
                     self.gui.remove_last_char()
                     search_phrase = search_phrase[:-1]
-                self.update_results(search_phrase)
+
             elif key == '\n':
                 break
             elif key in ['KEY_RIGHT', 'KEY_LEFT']:
@@ -81,7 +89,7 @@ class HistorySearch:
                 search_phrase += key
                 self.gui.write(key)
 
-                self.update_results(search_phrase)
+            self.update_results(search_phrase, result_selection_idx)
 
         return search_phrase
 
