@@ -11,5 +11,5 @@ apelsin()
     rm $APELSIN_DIR/search_result
 
     echo $command
-    $command
+    eval $command
 }
