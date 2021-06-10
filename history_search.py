@@ -68,13 +68,13 @@ class HistorySearch:
             elif key in ['KEY_RIGHT', 'KEY_LEFT']:
                 pass
             elif key in ['KEY_UP', 'KEY_DOWN']:
-                if self.mode == Mode.typing:
+                if self.mode != Mode.selecting_results:
                     result_selection_idx = 0
-                    self.mode = Mode.selecting_results
                 elif key == 'KEY_DOWN':
                     result_selection_idx = (result_selection_idx + 1) % len(hits)
                 else:
                     result_selection_idx = (result_selection_idx - 1) % len(hits)
+                self.mode = Mode.selecting_results
             elif key == 'KEY_RESIZE':
                 pass
             elif key in ['KEY_PPAGE', 'KEY_NPAGE', 'KEY_DC', 'KEY_END', 'KEY_HOME', 'KEY_IC']:
@@ -88,8 +88,9 @@ class HistorySearch:
                 self.pos_search_bar_cursor = self.gui.get_cursor_pos()
 
             # Update results
-            search_phrase_list = search_phrase.split(' ')
-            hits = self.searcher.search_for_phrases(search_phrase_list)
+            if self.mode == Mode.typing:
+                search_phrase_list = search_phrase.split(' ')
+                hits = self.searcher.search_for_phrases(search_phrase_list)
 
             self.display_results(hits, result_selection_idx)
 
