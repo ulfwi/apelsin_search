@@ -16,6 +16,7 @@ class HistorySearch:
         self.gui = GUI()
         self.mode = Mode.none
 
+        self.pos_search_bar_cursor = Position(0, 0)
         self.pos_search_results = Position(0, 1)
 
     def display_results(self, hits, result_selection_idx):
@@ -44,15 +45,13 @@ class HistorySearch:
                     break
 
     def update_results(self, search_phrase, result_selection_idx):
-        pos_search_bar_cursor = self.gui.get_cursor_pos()
-
         search_phrase_list = search_phrase.split(' ')
         hits = self.searcher.search_for_phrases(search_phrase_list)
 
         self.display_results(hits, result_selection_idx)
 
         # Move cursor back
-        self.gui.goto_pos(pos_search_bar_cursor)
+        self.gui.goto_pos(self.pos_search_bar_cursor)
 
         return hits
 
@@ -69,6 +68,8 @@ class HistorySearch:
                 if search_phrase:
                     self.gui.remove_last_char()
                     search_phrase = search_phrase[:-1]
+
+                self.pos_search_bar_cursor = self.gui.get_cursor_pos()
 
             elif key == '\n':
                 break
@@ -91,6 +92,7 @@ class HistorySearch:
                 self.mode = Mode.typing
                 search_phrase += key
                 self.gui.write(key)
+                self.pos_search_bar_cursor = self.gui.get_cursor_pos()
 
             hits = self.update_results(search_phrase, result_selection_idx)
 
