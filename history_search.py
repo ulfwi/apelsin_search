@@ -44,20 +44,11 @@ class HistorySearch:
                 except:
                     break
 
-    def update_results(self, search_phrase, result_selection_idx):
-        search_phrase_list = search_phrase.split(' ')
-        hits = self.searcher.search_for_phrases(search_phrase_list)
-
-        self.display_results(hits, result_selection_idx)
-
-        # Move cursor back
-        self.gui.goto_pos(self.pos_search_bar_cursor)
-
-        return hits
-
     def run(self):
         self.mode = Mode.typing
         self.gui.write("$ ")
+        self.pos_search_bar_cursor = self.gui.get_cursor_pos()
+
         search_phrase = ""
         result_selection_idx = 0
         hits = []
@@ -65,6 +56,7 @@ class HistorySearch:
             key = self.gui.get_key()
             if key == 'KEY_BACKSPACE':
                 self.mode = Mode.typing
+                self.gui.goto_pos(self.pos_search_bar_cursor)
                 if search_phrase:
                     self.gui.remove_last_char()
                     search_phrase = search_phrase[:-1]
@@ -90,11 +82,19 @@ class HistorySearch:
                 pass
             else:
                 self.mode = Mode.typing
+                self.gui.goto_pos(self.pos_search_bar_cursor)
                 search_phrase += key
                 self.gui.write(key)
                 self.pos_search_bar_cursor = self.gui.get_cursor_pos()
 
-            hits = self.update_results(search_phrase, result_selection_idx)
+            # Update results
+            search_phrase_list = search_phrase.split(' ')
+            hits = self.searcher.search_for_phrases(search_phrase_list)
+
+            self.display_results(hits, result_selection_idx)
+
+            # Move cursor back
+            self.gui.goto_pos(self.pos_search_bar_cursor)
 
         return hits[result_selection_idx]
 
