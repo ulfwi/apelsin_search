@@ -3,6 +3,13 @@ from file_searcher import FileSearcher
 from utils import Position
 from enum import Enum
 
+allowed_symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+                   'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+                   'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D',
+                   'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+                   'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                   'Y', 'Z', ' ', '/', '\\', '.', '_', '-', '*', '(',
+                   ')', '{', '}', '"', '~', '$']
 
 class Mode(Enum):
     none = 0
@@ -77,15 +84,16 @@ class HistorySearch:
                 self.mode = Mode.selecting_results
             elif key == 'KEY_RESIZE':
                 pass
-            elif key in ['KEY_PPAGE', 'KEY_NPAGE', 'KEY_DC', 'KEY_END', 'KEY_HOME', 'KEY_IC']:
-                # Ignore keys
-                pass
-            else:
+            elif key in allowed_symbols:
                 self.mode = Mode.typing
                 self.gui.goto_pos(self.pos_search_bar_cursor)
                 search_phrase += key
                 self.gui.write(key)
                 self.pos_search_bar_cursor = self.gui.get_cursor_pos()
+            else:
+                # elif key in ['KEY_PPAGE', 'KEY_NPAGE', 'KEY_DC', 'KEY_END', 'KEY_HOME', 'KEY_IC']
+                # Ignore keys
+                pass
 
             # Update results
             if self.mode == Mode.typing:
