@@ -2,6 +2,11 @@ import curses
 from utils import Position
 from enum import Enum
 
+
+def exit_curses():
+    curses.echo()
+    curses.endwin()
+
 class CursesColors(Enum):
     UbuntuPurple = 0
     Green = 1
@@ -55,5 +60,4 @@ class GUI:
     def __del__(self):
         # curses.nocbreak()
         self.stdscr.keypad(False)
-        curses.echo()
-        curses.endwin()
+        exit_curses()

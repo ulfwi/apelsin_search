@@ -1,7 +1,9 @@
-from curses_gui import GUI
+from curses_gui import GUI, exit_curses
 from file_searcher import FileSearcher
 from utils import Position
 from enum import Enum
+import traceback
+
 
 allowed_symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
@@ -45,18 +47,15 @@ class HistorySearch:
         self.gui.goto_pos(self.pos_search_results)
         if hits:
             for i in range(nbr_search_results):
-                try:
-                    command_str = hits[i]
-                    if len(command_str) > max_command_length:
-                        # Don't print entire command if it's too long
-                        command_str = command_str[:max_command_length+1]
+                command_str = hits[i]
+                if len(command_str) > max_command_length:
+                    # Don't print entire command if it's too long
+                    command_str = command_str[:max_command_length+1]
 
-                    if self.mode == Mode.selecting_results and i == result_selection_idx:
-                        self.gui.write(command_str + '\n', 2)
-                    else:
-                        self.gui.write(command_str + '\n', 1)
-                except:
-                    break
+                if self.mode == Mode.selecting_results and i == result_selection_idx:
+                    self.gui.write(command_str + '\n', 2)
+                else:
+                    self.gui.write(command_str + '\n', 1)
 
     def run(self):
         self.mode = Mode.typing
@@ -118,10 +117,17 @@ class HistorySearch:
 if __name__ == '__main__':
     filepath = '/home/s0001191/.bash_history'
     apelsin_dir = '/home/s0001191/repos/history'
-    history_search = HistorySearch(filepath)
-    output = history_search.run()
 
-    # Write result to file
-    with open(apelsin_dir + "/search_result", "w") as f:
-        f.write(output)
+    try:
+        history_search = HistorySearch(filepath)
+        output = history_search.run()
 
+        # Write result to file
+        with open(apelsin_dir + "/search_result", "w") as f:
+            f.write(output)
+    except:
+        exit_curses()
+        traceback.print_exc()
+        exit(1)
+
+    exit(0)
