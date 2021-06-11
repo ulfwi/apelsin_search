@@ -113,12 +113,19 @@ class HistorySearch:
             # Move cursor back
             self.gui.goto_pos(self.pos_search_bar_cursor)
 
-        return hits[result_selection_idx]
+        result = ""
+        if hits:
+            if self.mode == Mode.selecting_results:
+                result = hits[result_selection_idx]
+            elif len(hits) == 1:
+                result = hits[0]
+
+        return result
 
 
 if __name__ == '__main__':
     filepath = '/home/s0001191/.bash_history'
-    apelsin_dir = '/home/s0001191/repos/history'
+    apelsin_dir = '/home/s0001191/repos/apelsin_search'
 
     try:
         history_search = HistorySearch(filepath)

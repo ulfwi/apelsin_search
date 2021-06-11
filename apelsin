@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APELSIN_DIR="/home/s0001191/repos/history"
+APELSIN_DIR="/home/s0001191/repos/apelsin_search"
 
 apelsin()
 {
