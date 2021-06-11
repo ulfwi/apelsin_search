@@ -81,12 +81,14 @@ class HistorySearch:
             elif key in ['KEY_RIGHT', 'KEY_LEFT']:
                 pass
             elif key in ['KEY_UP', 'KEY_DOWN']:
+                nbr_search_results = self.get_nbr_search_results(hits)
                 if self.mode != Mode.selecting_results:
                     result_selection_idx = 0
-                elif key == 'KEY_DOWN':
-                    result_selection_idx = (result_selection_idx + 1) % len(hits)
-                else:
-                    result_selection_idx = (result_selection_idx - 1) % len(hits)
+                elif nbr_search_results != 0:
+                    if key == 'KEY_DOWN':
+                        result_selection_idx = (result_selection_idx + 1) % nbr_search_results
+                    else:
+                        result_selection_idx = (result_selection_idx - 1) % nbr_search_results
                 self.mode = Mode.selecting_results
             elif key == 'KEY_RESIZE':
                 pass
