@@ -26,23 +26,30 @@ class HistorySearch:
         self.pos_search_bar_cursor = Position(0, 0)
         self.pos_search_results = Position(0, 1)
 
-    def display_results(self, hits, result_selection_idx):
+    def get_nbr_search_results(self, hits):
         pos_max = self.gui.get_max_pos()
-        max_nbr_search_results = max(pos_max.y - 5, 5)
+        max_nbr_search_results =  max(pos_max.y - 5, 5)
+        return min(max_nbr_search_results, len(hits))
 
+    def get_max_command_length(self):
+        pos_max = self.gui.get_max_pos()
+        return pos_max.x - 2
+
+    def display_results(self, hits, result_selection_idx):
         # Clear old results
         self.gui.clear_remainder_of_screen()
 
         # Print top results
+        nbr_search_results = self.get_nbr_search_results(hits)
+        max_command_length = self.get_max_command_length()
         self.gui.goto_pos(self.pos_search_results)
         if hits:
-            nbr_search_results = min(max_nbr_search_results, len(hits))
             for i in range(nbr_search_results):
                 try:
                     command_str = hits[i]
-                    if len(command_str) >= pos_max.x-1:
+                    if len(command_str) > max_command_length:
                         # Don't print entire command if it's too long
-                        command_str = command_str[:pos_max.x-1]
+                        command_str = command_str[:max_command_length+1]
 
                     if self.mode == Mode.selecting_results and i == result_selection_idx:
                         self.gui.write(command_str + '\n', 2)
@@ -113,8 +120,6 @@ if __name__ == '__main__':
     apelsin_dir = '/home/s0001191/repos/history'
     history_search = HistorySearch(filepath)
     output = history_search.run()
-
-    del history_search
 
     # Write result to file
     with open(apelsin_dir + "/search_result", "w") as f:
