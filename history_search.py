@@ -153,10 +153,15 @@ class HistorySearch:
             self.gui.goto_pos(self.pos_search_bar_cursor)
 
         result = ""
-        if hits:
+        if hits or hits_favorites:
             if self.mode == Mode.selecting_results:
-                result = hits[result_selection_idx]
-            elif len(hits) == 1:
+                if result_selection_idx < len(hits_favorites):
+                    result = hits_favorites[result_selection_idx]
+                else:
+                    result = hits[result_selection_idx - len(hits_favorites)]
+            elif hits_favorites:
+                result = hits_favorites[0]
+            elif hits:
                 result = hits[0]
 
         return result
