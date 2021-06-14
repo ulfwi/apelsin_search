@@ -106,6 +106,7 @@ class HistorySearch:
         result_selection_idx = 0
         hits = []
         hits_favorites = []
+        return_command = True
         while True:
             key = self.gui.get_key()
             key = self.handle_special_chars(key)
@@ -118,7 +119,10 @@ class HistorySearch:
                     search_phrase = search_phrase[:-1]
 
                 self.pos_search_bar_cursor = self.gui.get_cursor_pos()
-
+            elif ord(key) == 24:
+                # Ctrl-x
+                return_command = False
+                break
             elif key == '\n':
                 break
             elif key in ['KEY_RIGHT', 'KEY_LEFT']:
@@ -145,10 +149,6 @@ class HistorySearch:
                     search_phrase += key
                     self.gui.write(key)
                     self.pos_search_bar_cursor = self.gui.get_cursor_pos()
-            else:
-                # elif key in ['KEY_PPAGE', 'KEY_NPAGE', 'KEY_DC', 'KEY_END', 'KEY_HOME', 'KEY_IC']
-                # Ignore keys
-                pass
 
             # Update results
             if self.mode == Mode.typing:
@@ -162,7 +162,7 @@ class HistorySearch:
             self.gui.goto_pos(self.pos_search_bar_cursor)
 
         result = ""
-        if hits or hits_favorites:
+        if return_command and (hits or hits_favorites):
             if self.mode == Mode.selecting_results:
                 result = self.extract_result(hits, hits_favorites, result_selection_idx)
             else:
