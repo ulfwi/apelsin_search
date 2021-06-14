@@ -31,6 +31,7 @@ class HistorySearch:
         self.pos_search_results = Position(0, 1)
 
         self.max_nbr_search_results = self.get_max_nbr_search_results()
+        self.max_command_length = self.get_max_command_length()
 
     def get_max_nbr_search_results(self):
         pos_max = self.gui.get_max_pos()
@@ -56,18 +57,17 @@ class HistorySearch:
         # Print top results
         nbr_hits = len(hits) + len(hits_favorites)
         nbr_search_results = self.get_nbr_search_results(nbr_hits)
-        max_command_length = self.get_max_command_length()
         self.gui.goto_pos(self.pos_search_results)
         if hits or hits_favorites:
             for i in range(nbr_search_results):
                 command_str = self.extract_result(hits, hits_favorites, i)
 
-                if len(command_str) > max_command_length:
+                if len(command_str) > self.max_command_length:
                     # Don't print entire command if it's too long
-                    command_str = command_str[:max_command_length+1]
+                    command_str = command_str[:self.max_command_length+1]
                 else:
                     # Pad with spaces so that selection looks good
-                    command_str += " " * (max_command_length + 1 - len(command_str))
+                    command_str += " " * (self.max_command_length + 1 - len(command_str))
 
                 if self.mode == Mode.selecting_results and i == result_selection_idx:
                     self.gui.write(command_str + '\n', 2)
@@ -135,11 +135,11 @@ class HistorySearch:
                         result_selection_idx = (result_selection_idx - 1) % nbr_search_results
                 self.mode = Mode.selecting_results
             elif key == 'KEY_RESIZE':
-                # TODO: Update max number search results and max command length here
+                # Update max size
                 self.max_nbr_search_results = self.get_max_nbr_search_results()
-                pass
+                self.max_command_length = self.get_max_command_length()
             elif key in allowed_symbols:
-                if len(search_phrase) < self.get_max_command_length() - 1:
+                if len(search_phrase) < self.max_command_length - 1:
                     self.mode = Mode.typing
                     self.gui.goto_pos(self.pos_search_bar_cursor)
                     search_phrase += key
