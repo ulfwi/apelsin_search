@@ -19,9 +19,9 @@ class Mode(Enum):
     selecting_results = 2
 
 class HistorySearch:
-    def __init__(self, filepath):
-        self.filepath = filepath
-        self.searcher = FileSearcher(self.filepath)
+    def __init__(self, bash_history_filepath):
+        self.bash_history_filepath = bash_history_filepath
+        self.searcher = FileSearcher(self.bash_history_filepath)
         self.gui = GUI()
         self.mode = Mode.none
 
@@ -152,11 +152,11 @@ class HistorySearch:
 
 
 if __name__ == '__main__':
-    filepath = '/home/s0001191/.bash_history'
+    bash_history_filepath = '/home/s0001191/.bash_history'
     apelsin_dir = '/home/s0001191/repos/apelsin_search'
 
     try:
-        history_search = HistorySearch(filepath)
+        history_search = HistorySearch(bash_history_filepath)
         output = history_search.run()
 
         # Write result to file
