@@ -51,6 +51,9 @@ class HistorySearch:
                 if len(command_str) > max_command_length:
                     # Don't print entire command if it's too long
                     command_str = command_str[:max_command_length+1]
+                else:
+                    # Pad with spaces so that selection looks good
+                    command_str += " " * (max_command_length + 1 - len(command_str))
 
                 if self.mode == Mode.selecting_results and i == result_selection_idx:
                     self.gui.write(command_str + '\n', 2)
