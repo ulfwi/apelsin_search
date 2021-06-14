@@ -30,10 +30,14 @@ class HistorySearch:
         self.pos_search_bar_cursor = Position(0, 0)
         self.pos_search_results = Position(0, 1)
 
-    def get_nbr_search_results(self, nbr_hits):
+        self.max_nbr_search_results = self.get_max_nbr_search_results()
+
+    def get_max_nbr_search_results(self):
         pos_max = self.gui.get_max_pos()
-        max_nbr_search_results =  max(pos_max.y - 5, 5)
-        return min(max_nbr_search_results, nbr_hits)
+        return pos_max.y - 2
+
+    def get_nbr_search_results(self, nbr_hits):
+        return min(self.max_nbr_search_results, nbr_hits)
 
     def get_max_command_length(self):
         pos_max = self.gui.get_max_pos()
@@ -128,6 +132,8 @@ class HistorySearch:
                         result_selection_idx = (result_selection_idx - 1) % nbr_search_results
                 self.mode = Mode.selecting_results
             elif key == 'KEY_RESIZE':
+                # TODO: Update max number search results and max command length here
+                self.max_nbr_search_results = self.get_max_nbr_search_results()
                 pass
             elif key in allowed_symbols:
                 if len(search_phrase) < self.get_max_command_length() - 1:
