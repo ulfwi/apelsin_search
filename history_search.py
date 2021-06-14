@@ -19,35 +19,42 @@ class Mode(Enum):
     selecting_results = 2
 
 class HistorySearch:
-    def __init__(self, bash_history_filepath):
+    def __init__(self, bash_history_filepath, bash_history_favorites_filepath):
         self.bash_history_filepath = bash_history_filepath
+        self.bash_history_favorites_filepath = bash_history_favorites_filepath
         self.searcher = FileSearcher(self.bash_history_filepath)
+        self.favorites_searcher = FileSearcher(self.bash_history_favorites_filepath)
         self.gui = GUI()
         self.mode = Mode.none
 
         self.pos_search_bar_cursor = Position(0, 0)
         self.pos_search_results = Position(0, 1)
 
-    def get_nbr_search_results(self, hits):
+    def get_nbr_search_results(self, nbr_hits):
         pos_max = self.gui.get_max_pos()
         max_nbr_search_results =  max(pos_max.y - 5, 5)
-        return min(max_nbr_search_results, len(hits))
+        return min(max_nbr_search_results, nbr_hits)
 
     def get_max_command_length(self):
         pos_max = self.gui.get_max_pos()
         return pos_max.x - 2
 
-    def display_results(self, hits, result_selection_idx):
+    def display_results(self, hits, hits_favorites, result_selection_idx):
         # Clear old results
         self.gui.clear_remainder_of_screen()
 
         # Print top results
-        nbr_search_results = self.get_nbr_search_results(hits)
+        nbr_hits = len(hits) + len(hits_favorites)
+        nbr_search_results = self.get_nbr_search_results(nbr_hits)
         max_command_length = self.get_max_command_length()
         self.gui.goto_pos(self.pos_search_results)
-        if hits:
+        if hits or hits_favorites:
             for i in range(nbr_search_results):
-                command_str = hits[i]
+                if i < len(hits_favorites):
+                    command_str = hits_favorites[i]
+                else:
+                    command_str = hits[i - len(hits_favorites)]
+
                 if len(command_str) > max_command_length:
                     # Don't print entire command if it's too long
                     command_str = command_str[:max_command_length+1]
@@ -91,6 +98,7 @@ class HistorySearch:
         search_phrase = ""
         result_selection_idx = 0
         hits = []
+        hits_favorites = []
         while True:
             key = self.gui.get_key()
             key = self.handle_special_chars(key)
@@ -109,7 +117,8 @@ class HistorySearch:
             elif key in ['KEY_RIGHT', 'KEY_LEFT']:
                 pass
             elif key in ['KEY_UP', 'KEY_DOWN']:
-                nbr_search_results = self.get_nbr_search_results(hits)
+                nbr_hits = len(hits) + len(hits_favorites)
+                nbr_search_results = self.get_nbr_search_results(nbr_hits)
                 if self.mode != Mode.selecting_results:
                     result_selection_idx = 0
                 elif nbr_search_results != 0:
@@ -136,8 +145,9 @@ class HistorySearch:
             if self.mode == Mode.typing:
                 search_phrase_list = search_phrase.split(' ')
                 hits = self.searcher.search_for_phrases(search_phrase_list)
+                hits_favorites = self.favorites_searcher.search_for_phrases(search_phrase_list)
 
-            self.display_results(hits, result_selection_idx)
+            self.display_results(hits, hits_favorites, result_selection_idx)
 
             # Move cursor back
             self.gui.goto_pos(self.pos_search_bar_cursor)
@@ -153,11 +163,12 @@ class HistorySearch:
 
 
 if __name__ == '__main__':
-    bash_history_filepath = '/home/s0001191/.bash_history'
     apelsin_dir = '/home/s0001191/repos/apelsin_search'
+    bash_history_filepath = '/home/s0001191/.bash_history'
+    bash_history_favorites_filepath = apelsin_dir + '/.bash_history_favorites'
 
     try:
-        history_search = HistorySearch(bash_history_filepath)
+        history_search = HistorySearch(bash_history_filepath, bash_history_favorites_filepath)
         output = history_search.run()
 
         # Write result to file
