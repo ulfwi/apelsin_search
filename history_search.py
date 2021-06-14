@@ -121,11 +121,12 @@ class HistorySearch:
             elif key == 'KEY_RESIZE':
                 pass
             elif key in allowed_symbols:
-                self.mode = Mode.typing
-                self.gui.goto_pos(self.pos_search_bar_cursor)
-                search_phrase += key
-                self.gui.write(key)
-                self.pos_search_bar_cursor = self.gui.get_cursor_pos()
+                if len(search_phrase) < self.get_max_command_length() - 1:
+                    self.mode = Mode.typing
+                    self.gui.goto_pos(self.pos_search_bar_cursor)
+                    search_phrase += key
+                    self.gui.write(key)
+                    self.pos_search_bar_cursor = self.gui.get_cursor_pos()
             else:
                 # elif key in ['KEY_PPAGE', 'KEY_NPAGE', 'KEY_DC', 'KEY_END', 'KEY_HOME', 'KEY_IC']
                 # Ignore keys
