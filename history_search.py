@@ -7,10 +7,10 @@ import traceback
 
 allowed_symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-                   'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D',
+                   'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö' 'A', 'B', 'C', 'D',
                    'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
                    'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-                   'Y', 'Z', ' ', '/', '\\', '.', '_', '-', '*', '(',
+                   'Y', 'Z', 'Å', 'Ä', 'Ö', ' ', '/', '\\', '.', '_', '-', '*', '(',
                    ')', '{', '}', '"', '~', '$']
 
 class Mode(Enum):
@@ -57,6 +57,29 @@ class HistorySearch:
                 else:
                     self.gui.write(command_str + '\n', 1)
 
+    def handle_special_chars(self, key):
+        # TODO Add support for å, ä, ö
+        start = 200
+        # for i in range(start, start + 50):
+        #     self.gui.write(str(i) + ": " + chr(i) + '\n')
+        # self.gui.write(str(ord(key)))
+        # self.gui.write(str(len(key)))
+        if key == '¥':
+            key = 'å'
+        elif key == '¤':
+            key = 'ä'
+        # elif ord(key) == 246:
+        #     key = 'ö'
+
+        # self.gui.write(str(ord(key)))
+
+        # 214: Ö
+        # 196: Ä
+        # 197: Å
+        # 246: ö
+
+        return key
+
     def run(self):
         self.mode = Mode.typing
         self.gui.write("$ ")
@@ -67,6 +90,8 @@ class HistorySearch:
         hits = []
         while True:
             key = self.gui.get_key()
+            key = self.handle_special_chars(key)
+
             if key == 'KEY_BACKSPACE':
                 self.mode = Mode.typing
                 self.gui.goto_pos(self.pos_search_bar_cursor)
