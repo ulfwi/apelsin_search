@@ -43,6 +43,12 @@ class HistorySearch:
         pos_max = self.gui.get_max_pos()
         return pos_max.x - 2
 
+    def extract_result(self, hits, hits_favorites, idx):
+        if idx < len(hits_favorites):
+            return hits_favorites[idx]
+        else:
+            return hits[idx - len(hits_favorites)]
+
     def display_results(self, hits, hits_favorites, result_selection_idx):
         # Clear old results
         self.gui.clear_remainder_of_screen()
@@ -54,10 +60,7 @@ class HistorySearch:
         self.gui.goto_pos(self.pos_search_results)
         if hits or hits_favorites:
             for i in range(nbr_search_results):
-                if i < len(hits_favorites):
-                    command_str = hits_favorites[i]
-                else:
-                    command_str = hits[i - len(hits_favorites)]
+                command_str = self.extract_result(hits, hits_favorites, i)
 
                 if len(command_str) > max_command_length:
                     # Don't print entire command if it's too long
@@ -161,14 +164,9 @@ class HistorySearch:
         result = ""
         if hits or hits_favorites:
             if self.mode == Mode.selecting_results:
-                if result_selection_idx < len(hits_favorites):
-                    result = hits_favorites[result_selection_idx]
-                else:
-                    result = hits[result_selection_idx - len(hits_favorites)]
-            elif hits_favorites:
-                result = hits_favorites[0]
-            elif hits:
-                result = hits[0]
+                result = self.extract_result(hits, hits_favorites, result_selection_idx)
+            else:
+                result = self.extract_result(hits, hits_favorites, 0)
 
         return result
 
