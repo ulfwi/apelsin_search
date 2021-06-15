@@ -48,16 +48,22 @@ class GUI:
         self.stdscr.addstr(string, curses.color_pair(color_pair))
 
     def write_and_highlight(self, string, words):
+        """ Print string and highlight any occurances of words """
+
         def insert_between(lst, item):
             result = [item] * (len(lst) * 2 - 1)
             result[0::2] = lst
             return result
-        # string_list = [string]
-        string_list = string.split(words[0])
-        string_list = insert_between(string_list, words[0])
+
+        string_list = [string]
+        for word in words:
+            new_string_list = []
+            for substring in string_list:
+                new_string_list += insert_between(substring.split(word), word)
+            string_list = new_string_list
 
         for substring in string_list:
-            if substring == words[0]:
+            if substring in words:
                 self.write(substring, color_pair=3)
             else:
                 self.write(substring, color_pair=1)

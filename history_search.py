@@ -154,6 +154,7 @@ class HistorySearch:
 
             # Update results
             search_phrase_list = search_phrase.split(' ')
+            search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
             if self.mode == Mode.typing:
                 hits = self.searcher.search_for_phrases(search_phrase_list)
                 hits_favorites = self.favorites_searcher.search_for_phrases(search_phrase_list)
