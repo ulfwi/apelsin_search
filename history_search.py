@@ -50,7 +50,7 @@ class HistorySearch:
         else:
             return hits[idx - len(hits_favorites)]
 
-    def display_results(self, hits, hits_favorites, result_selection_idx):
+    def display_results(self, hits, hits_favorites, result_selection_idx, search_phrase_list):
         # Clear old results
         self.gui.clear_remainder_of_screen()
 
@@ -71,6 +71,8 @@ class HistorySearch:
 
                 if self.mode == Mode.selecting_results and i == result_selection_idx:
                     self.gui.write(command_str + '\n', 2)
+                elif search_phrase_list and search_phrase_list[0] != '':
+                    self.gui.write_and_highlight(command_str + '\n', search_phrase_list)
                 else:
                     self.gui.write(command_str + '\n', 1)
 
@@ -151,12 +153,12 @@ class HistorySearch:
                     self.pos_search_bar_cursor = self.gui.get_cursor_pos()
 
             # Update results
+            search_phrase_list = search_phrase.split(' ')
             if self.mode == Mode.typing:
-                search_phrase_list = search_phrase.split(' ')
                 hits = self.searcher.search_for_phrases(search_phrase_list)
                 hits_favorites = self.favorites_searcher.search_for_phrases(search_phrase_list)
 
-            self.display_results(hits, hits_favorites, result_selection_idx)
+            self.display_results(hits, hits_favorites, result_selection_idx, search_phrase_list)
 
             # Move cursor back
             self.gui.goto_pos(self.pos_search_bar_cursor)

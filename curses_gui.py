@@ -25,6 +25,7 @@ class GUI:
         curses.init_color(COLOR_UBUNTU_PURPLE, 4*48, 4*10, 4*36)
         curses.init_pair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_GREEN)
+        curses.init_pair(3, curses.COLOR_RED, curses.COLOR_BLACK)
         curses.noecho()
         # curses.cbreak()
         self.stdscr.keypad(True)
@@ -43,8 +44,23 @@ class GUI:
     def goto_pos(self, pos):
         self.stdscr.move(pos.y, pos.x)
 
-    def write(self, string, color_pair=0):
+    def write(self, string, color_pair=1):
         self.stdscr.addstr(string, curses.color_pair(color_pair))
+
+    def write_and_highlight(self, string, words):
+        def insert_between(lst, item):
+            result = [item] * (len(lst) * 2 - 1)
+            result[0::2] = lst
+            return result
+        # string_list = [string]
+        string_list = string.split(words[0])
+        string_list = insert_between(string_list, words[0])
+
+        for substring in string_list:
+            if substring == words[0]:
+                self.write(substring, color_pair=3)
+            else:
+                self.write(substring, color_pair=1)
 
     def remove_last_char(self):
         # Remove last letter
