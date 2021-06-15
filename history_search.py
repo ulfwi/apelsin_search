@@ -119,7 +119,7 @@ class HistorySearch:
                     search_phrase = search_phrase[:-1]
 
                 self.pos_search_bar_cursor = self.gui.get_cursor_pos()
-            elif ord(key) == 24:
+            elif (len(key) == 1) and (ord(key) == 24):
                 # Ctrl-x
                 return_command = False
                 break
