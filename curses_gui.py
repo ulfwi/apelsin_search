@@ -45,6 +45,9 @@ class GUI:
         self.stdscr.move(pos.y, pos.x)
 
     def write(self, string, color_pair=1):
+        if not isinstance(string, str):
+            string = str(string)
+
         self.stdscr.addstr(string, curses.color_pair(color_pair))
 
     def write_and_highlight(self, string, words):

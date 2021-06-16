@@ -3,6 +3,7 @@
 ./bazel.py build -c opt stringent/targets/pi/targettracking:fry --remote_cache=""
 ./bazel.py test -c opt stringent/libraries/targettracking_validator/test --remote_cache=""
 ./bazel.py test -c opt stringent/modules/targettracking/test --remote_cache=""
+./bazel.py test -c opt stringent/targets/pi/targettracking/test --remote_cache=""
 ./run.py qac --configure --clean --target stringent/modules/targettracking --gui
 ./run.py qac --configure --clean --target stringent/libraries/targettracking_validator --gui
 git push origin HEAD:refs/for/master%wip
