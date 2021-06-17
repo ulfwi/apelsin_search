@@ -186,6 +186,9 @@ if __name__ == '__main__':
         # Write result to file
         with open(apelsin_dir + "/search_result", "w") as f:
             f.write(output)
+    except KeyboardInterrupt:
+        exit_curses()
+        exit(1)
     except:
         exit_curses()
         traceback.print_exc()
