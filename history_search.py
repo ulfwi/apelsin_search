@@ -46,23 +46,17 @@ class HistorySearch:
         pos_max = self.gui.get_max_pos()
         return pos_max.x - 2
 
-    def extract_result(self, hits, hits_favorites, idx):
-        if idx < len(hits_favorites):
-            return hits_favorites[idx]
-        else:
-            return hits[idx - len(hits_favorites)]
-
-    def display_results(self, hits, hits_favorites, result_selection_idx, search_phrase_list):
+    def display_results(self, hits, result_selection_idx, search_phrase_list):
         # Clear old results
         self.gui.clear_remainder_of_screen()
 
         # Print top results
-        nbr_hits = len(hits) + len(hits_favorites)
+        nbr_hits = len(hits)
         nbr_search_results = self.get_nbr_search_results(nbr_hits)
         self.gui.goto_pos(self.pos_search_results)
-        if hits or hits_favorites:
+        if hits:
             for i in range(nbr_search_results):
-                command_str = self.extract_result(hits, hits_favorites, i)
+                command_str = hits[i]
 
                 if len(command_str) > self.max_command_length:
                     # Don't print entire command if it's too long
@@ -108,14 +102,13 @@ class HistorySearch:
 
         search_phrase = ""
         result_selection_idx = 0
-        hits = self.searcher.get_history_list()
-        hits_favorites = self.favorites_searcher.get_history_list()
+        hits = self.favorites_searcher.get_history_list() + self.searcher.get_history_list()
         search_phrase_list = []
         return_command = True
         execute_cmd = False
         while True:
             # Display results
-            self.display_results(hits, hits_favorites, result_selection_idx, search_phrase_list)
+            self.display_results(hits, result_selection_idx, search_phrase_list)
 
             # Move cursor back
             self.gui.goto_pos(self.pos_search_bar_cursor)
@@ -142,7 +135,7 @@ class HistorySearch:
                 execute_cmd = False
                 break
             elif key in ['KEY_UP', 'KEY_DOWN']:
-                nbr_hits = len(hits) + len(hits_favorites)
+                nbr_hits = len(hits)
                 nbr_search_results = self.get_nbr_search_results(nbr_hits)
                 if self.mode != Mode.selecting_results:
                     result_selection_idx = 0
@@ -168,17 +161,17 @@ class HistorySearch:
             search_phrase_list = search_phrase.split(' ')
             search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
             if self.mode == Mode.typing:
-                hits = self.searcher.search_for_phrases(search_phrase_list)
-                hits_favorites = self.favorites_searcher.search_for_phrases(search_phrase_list)
+                hits = self.favorites_searcher.search_for_phrases(search_phrase_list) \
+                    + self.searcher.search_for_phrases(search_phrase_list)
 
         result = ""
-        if return_command and (hits or hits_favorites):
+        if return_command and hits:
             if self.mode == Mode.selecting_results:
-                result = self.extract_result(hits, hits_favorites, result_selection_idx)
+                result = hits[result_selection_idx]
                 if execute_cmd:
                     result += '\n'
             else:
-                result = self.extract_result(hits, hits_favorites, 0)
+                result = hits[0]
 
         return result
 
