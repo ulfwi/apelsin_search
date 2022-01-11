@@ -157,10 +157,10 @@ class HistorySearch:
                     self.gui.write(key)
                     self.pos_search_bar_cursor = self.gui.get_cursor_pos()
 
-            # Update results
-            search_phrase_list = search_phrase.split(' ')
-            search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
             if self.mode == Mode.typing:
+                # Update results
+                search_phrase_list = search_phrase.split(' ')
+                search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
                 hits = self.favorites_searcher.search_for_phrases(search_phrase_list) \
                     + self.searcher.search_for_phrases(search_phrase_list)
 
