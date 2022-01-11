@@ -10,8 +10,7 @@ class FileSearcher:
         """ Returns a list of all the previous commands without duplicates """
         history_set = set()  # use set to avoid duplicates
         with open(filepath, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
+            for line in f:
                 if line[0] != '#':
                     line = line.strip('\n')
                     history_set.add(line)

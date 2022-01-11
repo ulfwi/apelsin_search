@@ -197,5 +197,3 @@ if __name__ == '__main__':
         exit_curses()
         traceback.print_exc()
         exit(1)
-
-    exit(0)
