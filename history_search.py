@@ -1,9 +1,11 @@
+import fcntl
+import termios
+import traceback
+from enum import Enum
+
 from curses_gui import GUI, exit_curses
 from file_searcher import FileSearcher
 from utils import Position
-from enum import Enum
-import traceback
-
 
 allowed_symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
@@ -109,6 +111,7 @@ class HistorySearch:
         hits = []
         hits_favorites = []
         return_command = True
+        execute_cmd = False
         while True:
             key = self.gui.get_key()
             key = self.handle_special_chars(key)
@@ -126,9 +129,11 @@ class HistorySearch:
                 return_command = False
                 break
             elif key == '\n':
+                execute_cmd = True
                 break
-            elif key in ['KEY_RIGHT', 'KEY_LEFT']:
-                pass
+            elif key == 'KEY_RIGHT':
+                execute_cmd = False
+                break
             elif key in ['KEY_UP', 'KEY_DOWN']:
                 nbr_hits = len(hits) + len(hits_favorites)
                 nbr_search_results = self.get_nbr_search_results(nbr_hits)
@@ -168,10 +173,17 @@ class HistorySearch:
         if return_command and (hits or hits_favorites):
             if self.mode == Mode.selecting_results:
                 result = self.extract_result(hits, hits_favorites, result_selection_idx)
+                if execute_cmd:
+                    result += '\n'
             else:
                 result = self.extract_result(hits, hits_favorites, 0)
 
         return result
+
+
+def writeToTerminalInput(cmd):
+    for c in cmd:
+        fcntl.ioctl(0, termios.TIOCSTI, c)
 
 
 if __name__ == '__main__':
@@ -182,10 +194,7 @@ if __name__ == '__main__':
     try:
         history_search = HistorySearch(bash_history_filepath, bash_history_favorites_filepath)
         output = history_search.run()
-
-        # Write result to file
-        with open(apelsin_dir + "/search_result", "w") as f:
-            f.write(output)
+        writeToTerminalInput(output)
     except KeyboardInterrupt:
         exit_curses()
         exit(1)
