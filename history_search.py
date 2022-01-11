@@ -34,13 +34,11 @@ class HistorySearch:
 
         self.max_nbr_search_results = self.get_max_nbr_search_results()
         self.max_command_length = self.get_max_command_length()
+        self.nbr_displayed_search_results = 0
 
     def get_max_nbr_search_results(self):
         pos_max = self.gui.get_max_pos()
         return pos_max.y - 2
-
-    def get_nbr_search_results(self, nbr_hits):
-        return min(self.max_nbr_search_results, nbr_hits)
 
     def get_max_command_length(self):
         pos_max = self.gui.get_max_pos()
@@ -51,11 +49,10 @@ class HistorySearch:
         self.gui.clear_remainder_of_screen()
 
         # Print top results
-        nbr_hits = len(hits)
-        nbr_search_results = self.get_nbr_search_results(nbr_hits)
+        self.nbr_displayed_search_results = min(self.max_nbr_search_results, len(hits))
         self.gui.goto_pos(self.pos_search_results)
         if hits:
-            for i in range(nbr_search_results):
+            for i in range(self.nbr_displayed_search_results):
                 command_str = hits[i]
 
                 if len(command_str) > self.max_command_length:
@@ -135,20 +132,23 @@ class HistorySearch:
                 execute_cmd = False
                 break
             elif key in ['KEY_UP', 'KEY_DOWN']:
-                nbr_hits = len(hits)
-                nbr_search_results = self.get_nbr_search_results(nbr_hits)
                 if self.mode != Mode.selecting_results:
-                    result_selection_idx = 0
-                elif nbr_search_results != 0:
                     if key == 'KEY_DOWN':
-                        result_selection_idx = (result_selection_idx + 1) % nbr_search_results
-                    else:
-                        result_selection_idx = (result_selection_idx - 1) % nbr_search_results
+                        result_selection_idx = 0
+                    elif key == 'KEY_UP':
+                        result_selection_idx = self.nbr_displayed_search_results - 1
+                elif self.nbr_displayed_search_results != 0:
+                    if key == 'KEY_DOWN':
+                        result_selection_idx = (result_selection_idx + 1) % self.nbr_displayed_search_results
+                    elif key == 'KEY_UP':
+                        result_selection_idx = (result_selection_idx - 1) % self.nbr_displayed_search_results
                 self.mode = Mode.selecting_results
             elif key == 'KEY_RESIZE':
                 # Update max size
                 self.max_nbr_search_results = self.get_max_nbr_search_results()
                 self.max_command_length = self.get_max_command_length()
+                if result_selection_idx > self.max_nbr_search_results:
+                    result_selection_idx = 0
             elif key in allowed_symbols:
                 if len(search_phrase) < self.max_command_length - 1:
                     self.mode = Mode.typing
@@ -168,10 +168,11 @@ class HistorySearch:
         if return_command and hits:
             if self.mode == Mode.selecting_results:
                 result = hits[result_selection_idx]
-                if execute_cmd:
-                    result += '\n'
             else:
                 result = hits[0]
+
+            if execute_cmd:
+                result += '\n'
 
         return result
 
