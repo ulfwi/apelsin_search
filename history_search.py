@@ -108,14 +108,21 @@ class HistorySearch:
 
         search_phrase = ""
         result_selection_idx = 0
-        hits = []
-        hits_favorites = []
+        hits = self.searcher.get_history_list()
+        hits_favorites = self.favorites_searcher.get_history_list()
+        search_phrase_list = []
         return_command = True
         execute_cmd = False
         while True:
+            # Display results
+            self.display_results(hits, hits_favorites, result_selection_idx, search_phrase_list)
+
+            # Move cursor back
+            self.gui.goto_pos(self.pos_search_bar_cursor)
+
+            # Handle input keys
             key = self.gui.get_key()
             key = self.handle_special_chars(key)
-
             if key == 'KEY_BACKSPACE':
                 self.mode = Mode.typing
                 self.gui.goto_pos(self.pos_search_bar_cursor)
@@ -163,11 +170,6 @@ class HistorySearch:
             if self.mode == Mode.typing:
                 hits = self.searcher.search_for_phrases(search_phrase_list)
                 hits_favorites = self.favorites_searcher.search_for_phrases(search_phrase_list)
-
-            self.display_results(hits, hits_favorites, result_selection_idx, search_phrase_list)
-
-            # Move cursor back
-            self.gui.goto_pos(self.pos_search_bar_cursor)
 
         result = ""
         if return_command and (hits or hits_favorites):

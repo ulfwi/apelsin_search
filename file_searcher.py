@@ -4,9 +4,9 @@ import argparse
 class FileSearcher:
     def __init__(self, filepath):
         self.filepath = filepath
-        self.history_list = self.get_history_list(self.filepath)
+        self.history_list = self.read_history_list_from_file(self.filepath)
 
-    def get_history_list(self, filepath):
+    def read_history_list_from_file(self, filepath):
         """ Returns a list of all the previous commands without duplicates """
         history_set = set()  # use set to avoid duplicates
         with open(filepath, 'r') as f:
@@ -19,6 +19,9 @@ class FileSearcher:
         history_list = list(history_set)
 
         return history_list
+
+    def get_history_list(self):
+        return self.history_list
 
     def search_for_phrases(self, phrases):
         """ Returns a list of commands from history_list that contains all phrases """
