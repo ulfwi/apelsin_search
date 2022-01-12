@@ -16,6 +16,7 @@ allowed_symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                    ')', '{', '}', '"', '~', '$']
 
 CTRL_X = '\x18'
+CTRL_F = '\x06'
 
 class Mode(Enum):
     none = 0
@@ -104,7 +105,7 @@ class HistorySearch:
         hits = self.favorites_searcher.get_history_list() + self.searcher.get_history_list()
         search_phrase_list = []
         execute_cmd = False
-        entry_deleted = False
+        entry_updated = False
         while True:
             # Display results
             self.display_results(hits, result_selection_idx, search_phrase_list)
@@ -153,7 +154,12 @@ class HistorySearch:
                 if self.mode == Mode.selecting_results:
                     selected_phrase = hits[result_selection_idx]
                     self.favorites_searcher.remove_phrase_in_file(selected_phrase)
-                    entry_deleted = True
+                    entry_updated = True
+            elif key == CTRL_F:
+                if self.mode == Mode.selecting_results:
+                    selected_phrase = hits[result_selection_idx]
+                    self.favorites_searcher.add_phrase_to_file(selected_phrase)
+                    entry_updated = True
             elif key in allowed_symbols:
                 if len(search_phrase) < self.max_command_length - 1:
                     self.mode = Mode.typing
@@ -162,9 +168,9 @@ class HistorySearch:
                     self.gui.write(key)
                     self.pos_search_bar_cursor = self.gui.get_cursor_pos()
 
-            if self.mode == Mode.typing or entry_deleted:
+            if self.mode == Mode.typing or entry_updated:
                 # Update results
-                entry_deleted = False
+                entry_updated = False
                 search_phrase_list = search_phrase.split(' ')
                 search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
                 hits = self.favorites_searcher.search_for_phrases(search_phrase_list) \

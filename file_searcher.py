@@ -26,6 +26,11 @@ class FileSearcher:
         with open(self.filepath, 'w') as f:
             f.write('\n'.join(self.history_list) + '\n')
 
+    def add_phrase_to_file(self, phrase):
+        self.history_list.append(phrase)
+        with open(self.filepath, 'a') as f:
+            f.write(phrase + '\n')
+
     def search_for_phrases(self, phrases):
         """ Returns a list of commands from history_list that contains all phrases """
         hits = []
