@@ -15,6 +15,8 @@ allowed_symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                    'Y', 'Z', 'Å', 'Ä', 'Ö', ' ', '/', '\\', '.', '_', '-', '*', '(',
                    ')', '{', '}', '"', '~', '$']
 
+CTRL_X = '\x18'
+
 class Mode(Enum):
     none = 0
     typing = 1
@@ -121,8 +123,7 @@ class HistorySearch:
                     search_phrase = search_phrase[:-1]
 
                 self.pos_search_bar_cursor = self.gui.get_cursor_pos()
-            elif (len(key) == 1) and (ord(key) == 24):
-                # Ctrl-x
+            elif key == CTRL_X:
                 raise KeyboardInterrupt
             elif key == '\n':
                 execute_cmd = True
