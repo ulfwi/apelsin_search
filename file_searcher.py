@@ -8,19 +8,23 @@ class FileSearcher:
 
     def read_history_list_from_file(self, filepath):
         """ Returns a list of all the previous commands without duplicates """
-        history_set = set()  # use set to avoid duplicates
+        history_list = []
         with open(filepath, 'r') as f:
             for line in f:
                 if line[0] != '#':
                     line = line.strip('\n')
-                    history_set.add(line)
-
-        history_list = list(history_set)
+                    if line not in history_list:
+                        history_list.append(line)
 
         return history_list
 
     def get_history_list(self):
         return self.history_list
+
+    def remove_phrase_in_file(self, phrase):
+        self.history_list.remove(phrase)
+        with open(self.filepath, 'w') as f:
+            f.write('\n'.join(self.history_list) + '\n')
 
     def search_for_phrases(self, phrases):
         """ Returns a list of commands from history_list that contains all phrases """

@@ -103,6 +103,7 @@ class HistorySearch:
         search_phrase_list = []
         return_command = True
         execute_cmd = False
+        entry_deleted = False
         while True:
             # Display results
             self.display_results(hits, result_selection_idx, search_phrase_list)
@@ -149,6 +150,11 @@ class HistorySearch:
                 self.max_command_length = self.get_max_command_length()
                 if result_selection_idx > self.max_nbr_search_results:
                     result_selection_idx = 0
+            elif key == 'KEY_DC':
+                if self.mode == Mode.selecting_results:
+                    selected_phrase = hits[result_selection_idx]
+                    self.favorites_searcher.remove_phrase_in_file(selected_phrase)
+                    entry_deleted = True
             elif key in allowed_symbols:
                 if len(search_phrase) < self.max_command_length - 1:
                     self.mode = Mode.typing
@@ -157,8 +163,9 @@ class HistorySearch:
                     self.gui.write(key)
                     self.pos_search_bar_cursor = self.gui.get_cursor_pos()
 
-            if self.mode == Mode.typing:
+            if self.mode == Mode.typing or entry_deleted:
                 # Update results
+                entry_deleted = False
                 search_phrase_list = search_phrase.split(' ')
                 search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
                 hits = self.favorites_searcher.search_for_phrases(search_phrase_list) \
