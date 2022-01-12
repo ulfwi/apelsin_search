@@ -4,12 +4,13 @@ import traceback
 from enum import Enum
 
 from curses_gui import GUI, exit_curses
+from debug import clear_debug_log, debug_print
 from file_searcher import FileSearcher
 from utils import Position
 
 allowed_symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-                   'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö' 'A', 'B', 'C', 'D',
+                   'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'A', 'B', 'C', 'D',
                    'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
                    'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
                    'Y', 'Z', 'Å', 'Ä', 'Ö', ' ', '/', '\\', '.', '_', '-', '*', '(',
@@ -73,25 +74,27 @@ class HistorySearch:
                     self.gui.write(command_str + '\n', 1)
 
     def handle_special_chars(self, key):
-        # TODO Add support for å, ä, ö
-        start = 200
-        # for i in range(start, start + 50):
-        #     self.gui.write(str(i) + ": " + chr(i) + '\n')
-        # self.gui.write(str(ord(key)))
-        # self.gui.write(str(len(key)))
-        if key == '¥':
-            key = 'å'
-        elif key == '¤':
-            key = 'ä'
-        # elif ord(key) == 246:
-        #     key = 'ö'
-
-        # self.gui.write(str(ord(key)))
-
-        # 214: Ö
-        # 196: Ä
-        # 197: Å
-        # 246: ö
+        PRE_UMLAUT = 'Ã'
+        A_RING = '¥'
+        O_UMLAUT = '¶'
+        A_UMLAUT = '¤'
+        A_RING_CAPITAL = '\x85'
+        A_UMLAUT_CAPITAL = '\x84'
+        O_UMLAUT_CAPITAL = '\x96'
+        if key == PRE_UMLAUT:
+            key = self.gui.get_key()
+            if key == A_RING:
+                key = 'å'
+            elif key == A_UMLAUT:
+                key = 'ä'
+            elif key == O_UMLAUT:
+                key = 'ö'
+            elif key == A_RING_CAPITAL:
+                key = 'Å'
+            elif key == A_UMLAUT_CAPITAL:
+                key = 'Ä'
+            elif key == O_UMLAUT_CAPITAL:
+                key = 'Ö'
 
         return key
 
@@ -198,6 +201,8 @@ if __name__ == '__main__':
     apelsin_dir = '/home/s0001191/repos/apelsin_search'
     bash_history_filepath = '/home/s0001191/.bash_history'
     bash_history_favorites_filepath = apelsin_dir + '/.bash_history_favorites'
+
+    # clear_debug_log()
 
     try:
         history_search = HistorySearch(bash_history_filepath, bash_history_favorites_filepath)
