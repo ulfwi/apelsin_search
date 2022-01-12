@@ -101,7 +101,6 @@ class HistorySearch:
         result_selection_idx = 0
         hits = self.favorites_searcher.get_history_list() + self.searcher.get_history_list()
         search_phrase_list = []
-        return_command = True
         execute_cmd = False
         entry_deleted = False
         while True:
@@ -124,8 +123,7 @@ class HistorySearch:
                 self.pos_search_bar_cursor = self.gui.get_cursor_pos()
             elif (len(key) == 1) and (ord(key) == 24):
                 # Ctrl-x
-                return_command = False
-                break
+                raise KeyboardInterrupt
             elif key == '\n':
                 execute_cmd = True
                 break
@@ -172,7 +170,7 @@ class HistorySearch:
                     + self.searcher.search_for_phrases(search_phrase_list)
 
         result = ""
-        if return_command and hits:
+        if hits:
             if self.mode == Mode.selecting_results:
                 result = hits[result_selection_idx]
             else:
