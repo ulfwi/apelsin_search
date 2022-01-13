@@ -2,7 +2,4 @@
 
 APELSIN_DIR="/home/s0001191/repos/apelsin_search"
 
-apelsin()
-{
-    python $APELSIN_DIR/history_search.py
-}
+alias apelsin='python $APELSIN_DIR/history_search.py'
