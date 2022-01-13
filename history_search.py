@@ -42,7 +42,7 @@ class HistorySearch:
 
     def get_max_nbr_search_results(self):
         pos_max = self.gui.get_max_pos()
-        return pos_max.y - 2
+        return pos_max.y - 1
 
     def get_max_command_length(self):
         pos_max = self.gui.get_max_pos()
@@ -67,11 +67,14 @@ class HistorySearch:
                     command_str += " " * (self.max_command_length + 1 - len(command_str))
 
                 if self.mode == Mode.selecting_results and i == result_selection_idx:
-                    self.gui.write(command_str + '\n', 2)
+                    self.gui.write(command_str, 2)
                 elif search_phrase_list and search_phrase_list[0] != '':
-                    self.gui.write_and_highlight(command_str + '\n', search_phrase_list)
+                    self.gui.write_and_highlight(command_str, search_phrase_list)
                 else:
-                    self.gui.write(command_str + '\n', 1)
+                    self.gui.write(command_str, 1)
+
+                if i != (self.max_nbr_search_results - 1):
+                    self.gui.write('\n')
 
     def handle_special_chars(self, key):
         PRE_UMLAUT = 'Ã'
