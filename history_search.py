@@ -8,7 +8,8 @@ from debug import clear_debug_log, debug_print
 from file_searcher import FileSearcher
 from utils import Position
 
-allowed_symbols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+allowed_symbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+                   'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
                    'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'A', 'B', 'C', 'D',
                    'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
