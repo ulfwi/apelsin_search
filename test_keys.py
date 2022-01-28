@@ -14,33 +14,33 @@ O_UMLAUT_CAPITAL = '\x96'
 
 
 def loop():
+    import locale
+
+    locale.setlocale(locale.LC_ALL, 'sv_SE.UTF-8')
+    code = locale.getpreferredencoding()
+    print(code)
+
     gui = GUI()
     gui.write("$ ")
 
     while True:
         key = gui.get_key()
-        if key == PRE_UMLAUT:
-            key = gui.get_key()
-            if key == A_RING:
-                key = 'å'
-            elif key == A_UMLAUT:
-                key = 'ä'
-            elif key == O_UMLAUT:
-                key = 'ö'
-            elif key == A_RING_CAPITAL:
-                key = 'Å'
-            elif key == A_UMLAUT_CAPITAL:
-                key = 'Ä'
-            elif key == O_UMLAUT_CAPITAL:
-                key = 'Ö'
-        # if (len(key) == 1) and (ord(key) == 24):
+        # if key == PRE_UMLAUT:
+        #     key = gui.get_key()
+        #     if key == A_RING:
+        #         key = 'å'
+        #     elif key == A_UMLAUT:
+        #         key = 'ä'
+        #     elif key == O_UMLAUT:
+        #         key = 'ö'
+        #     elif key == A_RING_CAPITAL:
+        #         key = 'Å'
+        #     elif key == A_UMLAUT_CAPITAL:
+        #         key = 'Ä'
+        #     elif key == O_UMLAUT_CAPITAL:
+        #         key = 'Ö'
+        # # if (len(key) == 1) and (ord(key) == 24):
         if key == CTRL_X:
-            break
-        elif key == CTRL_F:
-            gui.write("Favorite")
-        elif key == 'KEY_DC':
-            pass
-        elif key == '\n':
             break
         else:
             gui.write(key)
