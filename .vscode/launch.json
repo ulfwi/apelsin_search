@@ -8,7 +8,7 @@
             "name": "Python: Apelsin search",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/history_search.py",
+            "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal"
         }
     ]
