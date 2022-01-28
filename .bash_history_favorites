@@ -13,3 +13,6 @@ git push origin HEAD:refs/for/master%wip
 ./bazel.py run //stringent/libraries/targettracking_validator:qac_severity --remote_cache=""
 git push origin HEAD:refs/for/master
 python3 -m stringent.stringent_config.common.tt_performance_guard
+./bazel.py run //support/bazel:buildifier_fix
+./bazel.py run //support/bazel:buildifier
+./bazel.py run //support/bazel:buildifier_diff
