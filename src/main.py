@@ -102,6 +102,21 @@ class HistorySearch:
 
         return key
 
+    def get_search_hits(self, search_phrase):
+        if search_phrase == "":
+            # Retrieve all entries in history
+            favorite_hits = self.favorites_searcher.get_history_list() 
+            history_hits = self.searcher.get_history_list()
+            search_phrase_list = []
+        else:
+            # Search for phrases
+            search_phrase_list = search_phrase.split(' ')
+            search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
+            favorite_hits = self.favorites_searcher.search_for_phrases(search_phrase_list) 
+            history_hits = self.searcher.search_for_phrases(search_phrase_list)
+
+        return favorite_hits + [hit for hit in history_hits if hit not in favorite_hits], search_phrase_list
+
     def run(self):
         self.mode = Mode.typing
         self.gui.write("$ ")
@@ -109,7 +124,7 @@ class HistorySearch:
 
         search_phrase = ""
         result_selection_idx = 0
-        hits = self.favorites_searcher.get_history_list() + self.searcher.get_history_list()
+        hits, search_phrase_list = self.get_search_hits(search_phrase)
         search_phrase_list = []
         execute_cmd = False
         entry_updated = False
@@ -178,10 +193,7 @@ class HistorySearch:
             if self.mode == Mode.typing or entry_updated:
                 # Update results
                 entry_updated = False
-                search_phrase_list = search_phrase.split(' ')
-                search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
-                hits = self.favorites_searcher.search_for_phrases(search_phrase_list) \
-                    + self.searcher.search_for_phrases(search_phrase_list)
+                hits, search_phrase_list = self.get_search_hits(search_phrase)
 
         result = ""
         if hits:
