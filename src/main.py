@@ -29,7 +29,7 @@ class HistorySearch:
     def __init__(self, bash_history_filepath, bash_history_favorites_filepath):
         self.bash_history_filepath = bash_history_filepath
         self.bash_history_favorites_filepath = bash_history_favorites_filepath
-        self.searcher = FileSearcher(self.bash_history_filepath)
+        self.searcher = FileSearcher(self.bash_history_filepath, has_timestamps=True)
         self.favorites_searcher = FileSearcher(self.bash_history_favorites_filepath)
         self.gui = GUI()
         self.mode = Mode.none
@@ -54,7 +54,7 @@ class HistorySearch:
         self.gui.clear_remainder_of_screen()
 
         # Print top results
-        self.nbr_displayed_search_results = min(self.max_nbr_search_results, len(hits))
+        self.nbr_displayed_search_results = min(self.max_nbr_search_results-4, len(hits))
         self.gui.goto_pos(self.pos_search_results)
         if hits:
             for i in range(self.nbr_displayed_search_results):
@@ -175,8 +175,13 @@ class HistorySearch:
             elif key == 'KEY_DC':
                 if self.mode == Mode.selecting_results:
                     selected_phrase = hits[result_selection_idx]
-                    self.favorites_searcher.remove_phrase_in_file(selected_phrase)
-                    entry_updated = True
+                    phrase_removed = self.favorites_searcher.remove_phrase_in_file(selected_phrase)
+                    if not phrase_removed:
+                        # If phrase not found in favourites, look in .bash_history instead
+                        phrase_removed = self.searcher.remove_phrase_in_file(selected_phrase)
+
+                    entry_updated = phrase_removed
+
             elif key == CTRL_F:
                 if self.mode == Mode.selecting_results:
                     selected_phrase = hits[result_selection_idx]
