@@ -3,7 +3,7 @@ import traceback
 from curses_gui import exit_curses
 from debug import clear_debug_log, debug_print
 from history_search_core import HistorySearchCore
-from terminal import write_to_terminal_input
+from utils import write_to_terminal_input
 
 if __name__ == '__main__':
     apelsin_dir = '/home/s0001191/repos/apelsin_search'
