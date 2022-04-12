@@ -48,6 +48,15 @@ class HistorySearch:
         pos_max = self.gui.get_max_pos()
         return pos_max.x - 2
 
+    def truncate(self, string):
+        if len(string) > self.max_command_length:
+            return string[:self.max_command_length+1]
+        else:
+            # Pad with spaces so that selection looks good
+            truncated_string = string
+            truncated_string += " " * (self.max_command_length + 1 - len(string))
+            return truncated_string
+
     def display_results(self, hits, result_selection_idx, search_phrase_list):
         # Clear old results
         self.gui.clear_remainder_of_screen()
@@ -57,14 +66,8 @@ class HistorySearch:
         self.gui.goto_pos(self.pos_search_results)
         if hits:
             for i in range(self.nbr_displayed_search_results):
-                command_str = hits[i]
-
-                if len(command_str) > self.max_command_length:
-                    # Don't print entire command if it's too long
-                    command_str = command_str[:self.max_command_length+1]
-                else:
-                    # Pad with spaces so that selection looks good
-                    command_str += " " * (self.max_command_length + 1 - len(command_str))
+                # Don't print entire command if it's too long
+                command_str = self.truncate(hits[i])
 
                 if self.mode == Mode.selecting_results and i == result_selection_idx:
                     self.gui.write(command_str, 2)
@@ -104,14 +107,14 @@ class HistorySearch:
     def get_search_hits(self, search_phrase):
         if search_phrase == "":
             # Retrieve all entries in history
-            favorite_hits = self.favorites_searcher.get_history_list() 
+            favorite_hits = self.favorites_searcher.get_history_list()
             history_hits = self.searcher.get_history_list()
             search_phrase_list = []
         else:
             # Search for phrases
             search_phrase_list = search_phrase.split(' ')
             search_phrase_list = [phrase for phrase in search_phrase_list if phrase != '']
-            favorite_hits = self.favorites_searcher.search_for_phrases(search_phrase_list) 
+            favorite_hits = self.favorites_searcher.search_for_phrases(search_phrase_list)
             history_hits = self.searcher.search_for_phrases(search_phrase_list)
 
         return favorite_hits + [hit for hit in history_hits if hit not in favorite_hits], search_phrase_list
