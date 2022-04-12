@@ -1,11 +1,10 @@
-import fcntl
-import termios
 import traceback
 from enum import Enum
 
 from curses_gui import GUI, exit_curses
 from debug import clear_debug_log, debug_print
 from file_searcher import FileSearcher
+from terminal import write_to_terminal_input
 from utils import Position
 
 allowed_symbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -213,11 +212,6 @@ class HistorySearch:
         return result
 
 
-def writeToTerminalInput(cmd):
-    for c in cmd:
-        fcntl.ioctl(0, termios.TIOCSTI, c)
-
-
 if __name__ == '__main__':
     apelsin_dir = '/home/s0001191/repos/apelsin_search'
     bash_history_filepath = '/home/s0001191/.bash_history'
@@ -228,7 +222,7 @@ if __name__ == '__main__':
     try:
         history_search = HistorySearch(bash_history_filepath, bash_history_favorites_filepath)
         output = history_search.run()
-        writeToTerminalInput(output)
+        write_to_terminal_input(output)
     except KeyboardInterrupt:
         exit_curses()
         exit(1)
