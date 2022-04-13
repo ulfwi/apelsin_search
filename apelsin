@@ -2,4 +2,7 @@
 
 APELSIN_DIR="/home/s0001191/repos/apelsin_search"
 
-alias apelsin='python $APELSIN_DIR/src/main.py'
+alias apelsin='python3 $APELSIN_DIR/src/main.py'
+
+# bind apelsin to ctrl-g
+bind '"\C-g": "\C-a apelsin \C-j"'
