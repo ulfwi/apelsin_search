@@ -92,26 +92,3 @@ class FileSearcher:
                 hits.append(line)
 
         return hits
-
-
-if __name__ == '__main__':
-    import argparse
-    description = r"""Search in command history.
-    Bjorn Ulfwi, 2021.
-    """
-    parser = argparse.ArgumentParser(description=description, formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('phrases', nargs='*', type=str, help='Phrases to search for.')
-    args = parser.parse_args()
-
-    filepath = '/home/s0001191/.bash_history'
-    phrases = args.phrases
-    # phrases = ['qac', 'validator']
-
-    print('Searching for phrases: ' + str(phrases))
-
-    searcher = FileSearcher(filepath)
-    hits = searcher.search_for_phrases(phrases)
-
-    print('\nHits: ')
-    for hit in hits:
-        print(hit)

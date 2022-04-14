@@ -1,3 +1,4 @@
+import argparse
 import traceback
 
 from curses_gui import exit_curses
@@ -6,14 +7,18 @@ from history_search_core import HistorySearchCore
 from utils import write_to_terminal_input
 
 if __name__ == '__main__':
-    apelsin_dir = '/home/s0001191/repos/apelsin_search'
-    bash_history_filepath = '/home/s0001191/.bash_history'
-    bash_history_favorites_filepath = apelsin_dir + '/.bash_history_favorites'
+    description = r"""Search in command history.
+    Bjorn Ulfwi, 2022.
+    """
+    parser = argparse.ArgumentParser(description=description, formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('--bash_history', type=str, help='Path to .bash_history.')
+    parser.add_argument('--bash_history_favorites', type=str, help='Path to .bash_history_favorites.')
+    args = parser.parse_args()
 
     # clear_debug_log()
 
     try:
-        history_search = HistorySearchCore(bash_history_filepath, bash_history_favorites_filepath)
+        history_search = HistorySearchCore(args.bash_history, args.bash_history_favorites)
         output = history_search.run()
         write_to_terminal_input(output)
     except KeyboardInterrupt:
