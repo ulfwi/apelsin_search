@@ -1,3 +1,25 @@
+# Setup
+
+Add the following to ~/.bashrc to get access to the search command:
+
+`source /path/to/apelsin`
+
+This will create a config files (if it doesn't already exist) and bind apelsin search to Ctrl+e.
+
+# Key bindings
+
+## Ctrl+e
+
+Open up the search interface. Use arrow keys to select search result. Press enter to execute command or right arrow key to just copy it to the command line.
+
+## Ctrl+f
+
+Add selected command to favorites.
+
+## Delete
+
+Remove command from favorites or ~/.bash_history.
+
 # TODO
 
 * Handle printing emojis: 📈
