@@ -1,8 +1,15 @@
 #!/bin/bash
 
-APELSIN_DIR="/home/s0001191/repos/apelsin_search"
-BASH_HISTORY_PATH="/home/s0001191/.bash_history"
-BASH_HISTORY_FAVORITES_PATH="$APELSIN_DIR/.bash_history_favorites"
+APELSIN_DIR="$HOME/repos/apelsin_search"
+APELSIN_CONFIG_DIR="$HOME/.config/apelsin_search"
+BASH_HISTORY_PATH="$HOME/.bash_history"
+BASH_HISTORY_FAVORITES_PATH="$APELSIN_CONFIG_DIR/.bash_history_favorites"
+
+# Create config file if it doesn't already exist
+mkdir -p $APELSIN_CONFIG_DIR
+if [ ! -f $BASH_HISTORY_FAVORITES_PATH ]; then
+    touch $BASH_HISTORY_FAVORITES_PATH
+fi
 
 alias apelsin='python3 $APELSIN_DIR/src/main.py --bash_history $BASH_HISTORY_PATH --bash_history_favorites $BASH_HISTORY_FAVORITES_PATH'
 
