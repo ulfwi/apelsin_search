@@ -11,7 +11,8 @@ if [ ! -f $BASH_HISTORY_FAVORITES_PATH ]; then
     touch $BASH_HISTORY_FAVORITES_PATH
 fi
 
-alias apelsin='python3 $APELSIN_DIR/src/main.py --bash_history $BASH_HISTORY_PATH --bash_history_favorites $BASH_HISTORY_FAVORITES_PATH'
+# Append current history to bash history and run main function
+alias apelsin='history -a; python3 $APELSIN_DIR/src/main.py --bash_history $BASH_HISTORY_PATH --bash_history_favorites $BASH_HISTORY_FAVORITES_PATH'
 
 # bind apelsin to ctrl-e
 bind '"\C-e": "\C-a apelsin \C-j"'
